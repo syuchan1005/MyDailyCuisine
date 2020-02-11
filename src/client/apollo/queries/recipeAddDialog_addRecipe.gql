@@ -1,0 +1,7 @@
+mutation addRecipe($recipe: InputRecipe!) {
+  addRecipe(recipe: $recipe) {
+    success
+    code
+    message
+  }
+}

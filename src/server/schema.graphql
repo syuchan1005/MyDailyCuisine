@@ -1,0 +1,103 @@
+scalar Upload
+
+type Query {
+  ## RecipeMiddleware
+  recipes: [Recipe!]!
+  recipe(id: ID!): Recipe
+}
+
+type Mutation {
+  ## RecipeMiddleware
+  addRecipe(recipe: InputRecipe!): Result!
+
+  ## AuthMiddleware
+  signUp(name: String!, password: String!): TokenResult!
+  logIn(name: String!, password: String!): TokenResult!
+  refreshToken(refreshToken: String!): TokenResult!
+  revokeToken(token: String!): Boolean!
+}
+
+type TokenResult {
+  success: Boolean!
+  code: String
+  message: String
+  token: Token
+}
+
+type Token {
+  accessToken: String!
+  refreshToken: String!
+  expiresIn: Int!
+}
+
+type Result {
+  success: Boolean!
+  code: String
+  message: String
+}
+
+type User {
+  id: ID!
+  name: String!
+}
+
+type Recipe {
+  id: ID!
+  image: Boolean!
+  name: String!
+  nameHiragana: String!
+  description: String!
+  howMany: String!
+  trick: String!
+  background: String!
+
+  user: User
+  steps: [RecipeStep!]
+  ingredients: [RecipeIngredient!]
+}
+
+type RecipeStep {
+  id: ID!
+  step: Int!
+  image: Boolean!
+  description: String!
+
+  recipe: Recipe
+}
+
+type RecipeIngredient {
+  id: ID!
+  amount: String!
+  groupName: String
+  ingredient: Ingredient!
+}
+
+type Ingredient {
+  id: ID!
+  name: String!
+}
+
+input InputRecipe {
+  image: Upload
+  name: String!
+  nameHiragana: String!
+  description: String!
+  howMany: String!
+  trick: String!
+  background: String!
+
+  steps: [InputRecipeStep!]!
+  ingredients: [InputIngredient!]!
+}
+
+input InputRecipeStep {
+  step: Int!
+  image: Upload
+  description: String!
+}
+
+input InputIngredient {
+  name: String!
+  amount: String!
+  groupName: String
+}

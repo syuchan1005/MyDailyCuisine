@@ -1,0 +1,9 @@
+query Recipes {
+  recipes {
+    id
+    image
+    name
+    nameHiragana
+    description
+  }
+}

@@ -1,0 +1,143 @@
+@startuml
+' styles
+skinparam linetype ortho
+skinparam shadowing false
+skinparam shadowing<<with_shadow>> true
+
+!unquoted function Table($name) return "class " + $name + " <<table>> << (T,#add1b2) >>"
+!unquoted function primary_key(x) return "<b>" + x + "</b>"
+!unquoted function foreign_key(x) return "<i>" + x + "</i>"
+!unquoted function unique(x) return "<color:green>" + x + "</color>"
+!unquoted function unique_key(x) return "<color:blue>" + x + "</color>"
+!unquoted function $not_null(x) return "<u>" + x + "</u>"
+!unquoted function unique_not_null(x) return "<color:green><u>" + x + "</u></color>"
+!unquoted function foreign_key_not_null(x) return "<i><u>" + x + "</u></i>"
+!unquoted function not_need(x) return "<s>" + x + "</s>"
+
+skinparam class {
+    ArrowColor #0d0d88
+    ArrowStyle Bold
+}
+
+skinparam class<<table>> {
+    BorderColor #c0c0c0
+    BackgroundColor #fcfad1
+}
+
+hide methods
+hide stereotypes
+
+' entities
+Table(details) <<with_shadow>> {
+    primary_key(PRIMARY KEY)
+    foreign_key(FOREIGN KEY)
+    $not_null(NOT NULL)
+    unique(UNIQUE)
+    unique_key([UNIQUE_KEY])
+}
+
+Table(users) {
+  primary_key(id) uuid
+  ---
+  unique_not_null(name) varchar(20)
+  ---
+  $not_null(createdAt) datetime
+  $not_null(updatedAt) datetime
+  deletedAt datetime
+  ---
+  uq_users_name(name)
+}
+
+Table(userHash) {
+  foreign_key(primary_key(userId)) uuid
+  ---
+  $not_null(hash) char(95)
+  ---
+  $not_null(createdAt) datetime
+  $not_null(updatedAt) datetime
+  ---
+  fk_userHash_userId_id_users(userId -> users(id))
+}
+
+Table(recipes) {
+  primary_key(id) uuid
+  ---
+  $not_null(image) boolean = false
+  unique_not_null(name) varchar(20)
+  $not_null(nameHiragana) varchar(60)
+  $not_null(description) varchar(60)
+  $not_null(howMany) varchar(10)
+  $not_null(trick) varchar(120) = ""
+  $not_null(background) varchar(120) = ""
+  ---
+  unique(foreign_key_not_null(userId)) uuid
+  ---
+  $not_null(createdAt) datetime
+  $not_null(updatedAt) datetime
+  ---
+  uq_recipes_name_userId(name, userId)
+  fk_recipes_userId_id_users(userId -> users(id))
+}
+
+Table(recipeSteps) {
+  primary_key(id) uuid
+  ---
+  unique($not_null(step)) integer
+  $not_null(image) boolean = false
+  $not_null(description) varchar(60)
+  ---
+  unique(foreign_key_not_null(recipeId)) uuid
+  ---
+  $not_null(createdAt) datetime
+  $not_null(updatedAt) datetime
+  ---
+  uq_recipeSteps_recipeId_step(recipeId, step)
+  fk_recipeSteps_recipeId_id_recipes(recipeId -> recipes(id))
+}
+
+Table(ingredients) {
+  primary_key(id) uuid
+  ---
+  unique_not_null(name) varchar(100)
+  ---
+  $not_null(createdAt) datetime
+  $not_null(updatedAt) datetime
+  ---
+  uq_ingredients_name(name)
+}
+
+Table(recipeIngredients) {
+  primary_key(id) uuid
+  ---
+  groupName varchar(30)
+  $not_null(amount) varchar(50)
+  ---
+  foreign_key(recipeId) uuid
+  foreign_key(ingredientId) uuid
+  ---
+  $not_null(createdAt) datetime
+  $not_null(updatedAt) datetime
+  ---
+  fk_recipeIngredients_recipeId_id_recipes(recipeId -> recipes(id))
+  fk_recipeIngredients_ingredientId_id_ingredients(ingredientId -> ingredients(id))
+}
+
+Table(tokens) {
+  primary_key(id) integer auto_increment
+  ---
+  foreign_key_not_null(userId) integer
+  $not_null(expires) datetime
+  $not_null(accessToken) char(40)
+  $not_null(refreshToken) char(40)
+  ---
+  fk_tokens_userId_id_users(userId -> users(id))
+}
+
+' relations
+users -- userHash
+users --{ recipes
+recipes --{ recipeSteps
+recipes --{ recipeIngredients
+recipeIngredients }-- ingredients
+users --o{ tokens
+@enduml
