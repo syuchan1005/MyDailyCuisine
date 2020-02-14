@@ -181,7 +181,7 @@ export type RecipeQuery = (
     & Pick<Recipe, 'id' | 'image' | 'name' | 'nameHiragana' | 'description' | 'howMany' | 'background' | 'trick'>
     & { user: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'name'>
+      & Pick<User, 'id' | 'name'>
     )>, ingredients: Maybe<Array<(
       { __typename?: 'RecipeIngredient' }
       & Pick<RecipeIngredient, 'id' | 'groupName' | 'amount'>

@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   AppBar,
-  Backdrop,
+  Backdrop, Button,
   Card,
   CardContent,
   CircularProgress,
@@ -83,6 +83,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   howMany: {
     marginLeft: theme.spacing(1),
   },
+  userWrapper: {
+    display: 'flex',
+    alignItems: 'baseline',
+  },
+  userLabel: {
+    flexGrow: 1,
+    textAlign: 'end',
+  },
 }));
 
 const Recipe: FC = (props) => {
@@ -143,6 +151,13 @@ const Recipe: FC = (props) => {
             <div>
               <Typography variant="h4">{data.recipe.name}</Typography>
               <Typography variant="subtitle1">{data.recipe.nameHiragana}</Typography>
+              <Typography variant="subtitle2" className={classes.userWrapper}>
+                {/* onClick={() => history.push(`/user/${data.recipe.user.id}`)} */}
+                <span className={classes.userLabel}>User:</span>
+                <Button>
+                  {data.recipe.user.name}
+                </Button>
+              </Typography>
             </div>
             <TextField
               multiline
