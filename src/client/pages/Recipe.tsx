@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   AppBar,
@@ -13,7 +13,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
+  TableRow, TextField,
   Theme,
   Toolbar,
   Typography,
@@ -97,6 +97,17 @@ const Recipe: FC = (props) => {
     variables: { id },
   });
 
+  const ingredients = useMemo(() => {
+    if (!data?.recipe.ingredients) return {};
+    return data.recipe.ingredients.reduce((obj, ing) => {
+      const g = ing.groupName ?? '';
+      // eslint-disable-next-line no-param-reassign
+      if (!obj[g]) obj[g] = [];
+      obj[g].push(ing);
+      return obj;
+    }, {});
+  }, [data]);
+
   return (
     <>
       <Backdrop className={classes.backdrop} open={loading} timeout={-1}>
@@ -118,7 +129,11 @@ const Recipe: FC = (props) => {
           <div className={classes.data}>
             <div className={classes.imageWrapper}>
               {(data.recipe.image) ? (
-                <img className={classes.image} src={`/recipe/${data.recipe.id}.jpg`} alt="recipe" />
+                <img
+                  className={classes.image}
+                  src={`/recipe/${data.recipe.id}_280x487^c.jpg`}
+                  alt="recipe"
+                />
               ) : (
                 <Card className={classes.noImage} elevation={3}>
                   <div>No Image</div>
@@ -129,7 +144,11 @@ const Recipe: FC = (props) => {
               <Typography variant="h4">{data.recipe.name}</Typography>
               <Typography variant="subtitle1">{data.recipe.nameHiragana}</Typography>
             </div>
-            <Typography variant="body1">{data.recipe.description}</Typography>
+            <TextField
+              multiline
+              label="Description"
+              value={data.recipe.description}
+            />
             <div>
               <div className={classes.ingredientHeader}>
                 <Typography variant="h6">
@@ -141,30 +160,41 @@ const Recipe: FC = (props) => {
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      <TableCell>GroupName</TableCell>
                       <TableCell>Name</TableCell>
                       <TableCell align="right">Amount</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {data.recipe.ingredients.map((ingredient) => (
-                      <TableRow key={ingredient.id}>
-                        <TableCell>{ingredient.groupName ?? ''}</TableCell>
-                        <TableCell>{ingredient.ingredient.name}</TableCell>
-                        <TableCell>{ingredient.amount}</TableCell>
-                      </TableRow>
-                    ))}
+                    {Object.keys(ingredients).map((k) => [
+                      (k && k.length > 0) ? (
+                        <TableRow key={k}>
+                          <TableCell colSpan={2}>
+                            <Typography>{k}</Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : undefined,
+                      ...ingredients[k].map((ingredient) => (
+                        <TableRow key={ingredient.id}>
+                          {/* <TableCell>{ingredient.groupName ?? ''}</TableCell> */}
+                          <TableCell>{ingredient.ingredient.name}</TableCell>
+                          <TableCell align="right">{ingredient.amount}</TableCell>
+                        </TableRow>
+                      )),
+                    ])}
                   </TableBody>
                 </Table>
               </TableContainer>
             </div>
+            <Typography variant="h6">
+              How to
+            </Typography>
             <div className={classes.stepGrid}>
               {data.recipe.steps.sort((a, b) => a.step - b.step).map((step) => (
                 <Card key={step.id}>
                   {(step.image) && (
                     <img
                       className={classes.stepImage}
-                      src={`/step/${step.id}.jpg`}
+                      src={`/step/${step.id}_160x.jpg`}
                       alt="step"
                     />
                   )}
@@ -175,8 +205,16 @@ const Recipe: FC = (props) => {
                 </Card>
               ))}
             </div>
-            <Typography variant="body1">{data.recipe.trick}</Typography>
-            <Typography variant="body1">{data.recipe.background}</Typography>
+            <TextField
+              multiline
+              label="Trick"
+              value={data.recipe.trick}
+            />
+            <TextField
+              multiline
+              label="Background of this recipe"
+              value={data.recipe.background}
+            />
           </div>
         )}
       </main>
