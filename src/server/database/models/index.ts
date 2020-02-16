@@ -7,6 +7,7 @@ import Recipe from './Recipe';
 import RecipeStep from './RecipeStep';
 import Ingredient from './Ingredient';
 import Token from './Token';
+import Meal from './Meal';
 
 
 const env = process.env.NODE_ENV || 'development';
@@ -31,6 +32,7 @@ export const models = {
   RecipeStep: RecipeStep.initialize(sequelize),
   Ingredient: Ingredient.initialize(sequelize),
   Token: Token.initialize(sequelize),
+  Meal: Meal.initialize(sequelize),
 };
 
 // @ts-ignore

@@ -16,7 +16,7 @@ import { useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 
 import { RecipesQuery as RecipesQueryData, RecipesQueryVariables } from '@common/GQLTypes.ts';
-import RecipesQuery from '@queries/pages_recipes_recipes.gql';
+import RecipesQuery from '@queries/common/recipes.gql';
 
 import HeaderAuthButton from '@client/component/HeaderAuthButton';
 

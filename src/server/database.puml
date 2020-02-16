@@ -133,6 +133,22 @@ Table(tokens) {
   fk_tokens_userId_id_users(userId -> users(id))
 }
 
+Table(meals) {
+  primary_key(id) uuid
+  ---
+  $not_null(time) datetime
+  $not_null(name) varchar(120)
+  $not_null(description) varchar(120)
+  foreign_key(recipeId) uuid
+  foreign_key_not_null(userId) uuid
+  ---
+  $not_null(createdAt) datetime
+  $not_null(updatedAt) datetime
+  ---
+  fk_meals_recipeId_id_recipes(recipeId -> recipes(id))
+  fK_meals_userId_id_users(userId -> users(id))
+}
+
 ' relations
 users -- userHash
 users --{ recipes
@@ -140,4 +156,6 @@ recipes --{ recipeSteps
 recipes --{ recipeIngredients
 recipeIngredients }-- ingredients
 users --o{ tokens
+recipes --{ meals
+users --{ meals
 @enduml

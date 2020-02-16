@@ -9,6 +9,12 @@ import {
   PubSubEngine,
 } from 'apollo-server-koa';
 
+import {
+  GraphQLDate,
+  GraphQLTime,
+  GraphQLDateTime,
+} from 'graphql-iso-date';
+
 // @ts-ignore
 import typeDefs from '@server/schema.graphql';
 import GQLMiddleware from '@server/graphql/GQLMiddleware';
@@ -56,6 +62,9 @@ export default class GraphQL {
       Mutation: middlewareOps('Mutation'),
       Subscription: middlewareOps('Subscription'),
       ...middlewareOps('Resolver'),
+      Date: GraphQLDate,
+      Time: GraphQLTime,
+      DateTime: GraphQLDateTime,
     };
     Object.keys(resolvers).forEach((k) => {
       if (Object.keys(resolvers[k]).length === 0) delete resolvers[k];

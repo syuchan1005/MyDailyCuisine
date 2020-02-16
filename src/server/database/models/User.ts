@@ -6,6 +6,7 @@ import {
 } from 'sequelize';
 import UserHash from './UserHash';
 import Recipe from './Recipe';
+import Meal from './Meal';
 
 class User extends Model {
   public id!: string;
@@ -20,11 +21,14 @@ class User extends Model {
 
   public readonly hash?: UserHash;
 
-  public readonly recipe?: Recipe;
+  public readonly recipes?: Recipe[];
+
+  public readonly meals?: Meal[];
 
   public static associations: {
     hash: Association<User, UserHash>;
     recipe: Association<User, Recipe>;
+    meals: Association<User, Meal>;
   };
 
   public static initialize(sequelize: Sequelize) {
@@ -54,9 +58,13 @@ class User extends Model {
       foreignKey: 'userId',
       as: 'hash',
     });
-    User.hasOne(Recipe, {
+    User.hasMany(Recipe, {
       foreignKey: 'userId',
-      as: 'recipe',
+      as: 'recipes',
+    });
+    User.hasMany(Meal, {
+      foreignKey: 'userId',
+      as: 'meals',
     });
   }
 }

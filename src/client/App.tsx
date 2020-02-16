@@ -14,6 +14,7 @@ import { hot } from 'react-hot-loader/root';
 import Recipes from '@client/pages/Recipes';
 import { orange, red } from '@material-ui/core/colors';
 import Recipe from '@client/pages/Recipe';
+import Calendar from '@client/pages/Calendar';
 
 export const commonTheme = {
   safeArea: {
@@ -74,6 +75,7 @@ const App: FC = () => {
         <Switch>
           <Route exact path={['/recipes', '/']} component={Recipes} />
           <Route exact path="/recipe/:id" component={Recipe} />
+          <Route exact path="/calendar" component={Calendar} />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>

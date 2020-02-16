@@ -6,7 +6,7 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  createStyles,
+  createStyles, Fab,
   IconButton,
   Table,
   TableBody,
@@ -18,7 +18,7 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import { ArrowBack } from '@material-ui/icons';
+import { ArrowBack, Refresh } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { commonTheme } from '@client/App';
@@ -91,6 +91,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     flexGrow: 1,
     textAlign: 'end',
   },
+  fab: {
+    position: 'fixed',
+    right: theme.spacing(2),
+    bottom: theme.spacing(2),
+  },
 }));
 
 const Recipe: FC = (props) => {
@@ -101,6 +106,7 @@ const Recipe: FC = (props) => {
   const {
     data,
     loading,
+    refetch,
   } = useQuery<RecipeQueryData, RecipeQueryVariables>(RecipeQuery, {
     variables: { id },
   });
@@ -232,6 +238,10 @@ const Recipe: FC = (props) => {
             />
           </div>
         )}
+
+        <Fab className={classes.fab} color="secondary" onClick={() => refetch()}>
+          <Refresh />
+        </Fab>
       </main>
     </>
   );

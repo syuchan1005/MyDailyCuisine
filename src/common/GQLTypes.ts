@@ -8,8 +8,13 @@ export type Scalars = {
   Boolean: boolean,
   Int: number,
   Float: number,
+  DateTime: any,
   Upload: File | Promise<{ filename: string, mimetype: string, encoding: string, createReadStream: () => NodeJS.ReadableStream }>,
+  Date: any,
+  Time: any,
 };
+
+
 
 export type Ingredient = {
    __typename?: 'Ingredient',
@@ -21,6 +26,13 @@ export type InputIngredient = {
   name: Scalars['String'],
   amount: Scalars['String'],
   groupName?: Maybe<Scalars['String']>,
+};
+
+export type InputMeal = {
+  time: Scalars['DateTime'],
+  name: Scalars['String'],
+  description: Scalars['String'],
+  recipeId: Scalars['ID'],
 };
 
 export type InputRecipe = {
@@ -41,10 +53,21 @@ export type InputRecipeStep = {
   description: Scalars['String'],
 };
 
+export type Meal = {
+   __typename?: 'Meal',
+  id: Scalars['ID'],
+  time: Scalars['DateTime'],
+  name: Scalars['String'],
+  description: Scalars['String'],
+  recipe?: Maybe<Recipe>,
+};
+
 export type Mutation = {
    __typename?: 'Mutation',
   /** # RecipeMiddleware */
   addRecipe: Result,
+  /** # MealMiddleware */
+  addMeal: Result,
   /** # AuthMiddleware */
   signUp: TokenResult,
   logIn: TokenResult,
@@ -55,6 +78,11 @@ export type Mutation = {
 
 export type MutationAddRecipeArgs = {
   recipe: InputRecipe
+};
+
+
+export type MutationAddMealArgs = {
+  meal: InputMeal
 };
 
 
@@ -84,6 +112,8 @@ export type Query = {
   /** # RecipeMiddleware */
   recipes: Array<Recipe>,
   recipe?: Maybe<Recipe>,
+  /** # MealMiddleware */
+  meals: Array<Meal>,
 };
 
 
@@ -130,6 +160,7 @@ export type Result = {
   message?: Maybe<Scalars['String']>,
 };
 
+
 export type Token = {
    __typename?: 'Token',
   accessToken: Scalars['String'],
@@ -152,6 +183,17 @@ export type User = {
   name: Scalars['String'],
 };
 
+export type RecipesQueryVariables = {};
+
+
+export type RecipesQuery = (
+  { __typename?: 'Query' }
+  & { recipes: Array<(
+    { __typename?: 'Recipe' }
+    & Pick<Recipe, 'id' | 'image' | 'name' | 'nameHiragana' | 'description'>
+  )> }
+);
+
 export type RefreshTokenMutationVariables = {
   token: Scalars['String']
 };
@@ -167,6 +209,34 @@ export type RefreshTokenMutation = (
       & Pick<Token, 'accessToken' | 'refreshToken' | 'expiresIn'>
     )> }
   ) }
+);
+
+export type AddMealMutationVariables = {
+  meal: InputMeal
+};
+
+
+export type AddMealMutation = (
+  { __typename?: 'Mutation' }
+  & { addMeal: (
+    { __typename?: 'Result' }
+    & Pick<Result, 'success' | 'code' | 'message'>
+  ) }
+);
+
+export type MealsQueryVariables = {};
+
+
+export type MealsQuery = (
+  { __typename?: 'Query' }
+  & { meals: Array<(
+    { __typename?: 'Meal' }
+    & Pick<Meal, 'id' | 'time' | 'name' | 'description'>
+    & { recipe: Maybe<(
+      { __typename?: 'Recipe' }
+      & Pick<Recipe, 'id' | 'name' | 'image'>
+    )> }
+  )> }
 );
 
 export type RecipeQueryVariables = {
@@ -193,17 +263,6 @@ export type RecipeQuery = (
       { __typename?: 'RecipeStep' }
       & Pick<RecipeStep, 'id' | 'step' | 'image' | 'description'>
     )>> }
-  )> }
-);
-
-export type RecipesQueryVariables = {};
-
-
-export type RecipesQuery = (
-  { __typename?: 'Query' }
-  & { recipes: Array<(
-    { __typename?: 'Recipe' }
-    & Pick<Recipe, 'id' | 'image' | 'name' | 'nameHiragana' | 'description'>
   )> }
 );
 
@@ -339,14 +398,19 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>,
   RecipeIngredient: ResolverTypeWrapper<RecipeIngredient>,
   Ingredient: ResolverTypeWrapper<Ingredient>,
+  Meal: ResolverTypeWrapper<Meal>,
+  DateTime: ResolverTypeWrapper<Scalars['DateTime']>,
   Mutation: ResolverTypeWrapper<{}>,
   InputRecipe: InputRecipe,
   Upload: ResolverTypeWrapper<Scalars['Upload']>,
   InputRecipeStep: InputRecipeStep,
   InputIngredient: InputIngredient,
   Result: ResolverTypeWrapper<Result>,
+  InputMeal: InputMeal,
   TokenResult: ResolverTypeWrapper<TokenResult>,
   Token: ResolverTypeWrapper<Token>,
+  Date: ResolverTypeWrapper<Scalars['Date']>,
+  Time: ResolverTypeWrapper<Scalars['Time']>,
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -361,15 +425,28 @@ export type ResolversParentTypes = {
   Int: Scalars['Int'],
   RecipeIngredient: RecipeIngredient,
   Ingredient: Ingredient,
+  Meal: Meal,
+  DateTime: Scalars['DateTime'],
   Mutation: {},
   InputRecipe: InputRecipe,
   Upload: Scalars['Upload'],
   InputRecipeStep: InputRecipeStep,
   InputIngredient: InputIngredient,
   Result: Result,
+  InputMeal: InputMeal,
   TokenResult: TokenResult,
   Token: Token,
+  Date: Scalars['Date'],
+  Time: Scalars['Time'],
 };
+
+export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
+  name: 'Date'
+}
+
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime'
+}
 
 export type IngredientResolvers<ContextType = any, ParentType extends ResolversParentTypes['Ingredient'] = ResolversParentTypes['Ingredient']> = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
@@ -377,8 +454,18 @@ export type IngredientResolvers<ContextType = any, ParentType extends ResolversP
   __isTypeOf?: isTypeOfResolverFn,
 };
 
+export type MealResolvers<ContextType = any, ParentType extends ResolversParentTypes['Meal'] = ResolversParentTypes['Meal']> = {
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
+  time?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>,
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  description?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  recipe?: Resolver<Maybe<ResolversTypes['Recipe']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn,
+};
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   addRecipe?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationAddRecipeArgs, 'recipe'>>,
+  addMeal?: Resolver<ResolversTypes['Result'], ParentType, ContextType, RequireFields<MutationAddMealArgs, 'meal'>>,
   signUp?: Resolver<ResolversTypes['TokenResult'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'name' | 'password'>>,
   logIn?: Resolver<ResolversTypes['TokenResult'], ParentType, ContextType, RequireFields<MutationLogInArgs, 'name' | 'password'>>,
   refreshToken?: Resolver<ResolversTypes['TokenResult'], ParentType, ContextType, RequireFields<MutationRefreshTokenArgs, 'refreshToken'>>,
@@ -388,6 +475,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   recipes?: Resolver<Array<ResolversTypes['Recipe']>, ParentType, ContextType>,
   recipe?: Resolver<Maybe<ResolversTypes['Recipe']>, ParentType, ContextType, RequireFields<QueryRecipeArgs, 'id'>>,
+  meals?: Resolver<Array<ResolversTypes['Meal']>, ParentType, ContextType>,
 };
 
 export type RecipeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Recipe'] = ResolversParentTypes['Recipe']> = {
@@ -429,6 +517,10 @@ export type ResultResolvers<ContextType = any, ParentType extends ResolversParen
   __isTypeOf?: isTypeOfResolverFn,
 };
 
+export interface TimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Time'], any> {
+  name: 'Time'
+}
+
 export type TokenResolvers<ContextType = any, ParentType extends ResolversParentTypes['Token'] = ResolversParentTypes['Token']> = {
   accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
@@ -455,13 +547,17 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type Resolvers<ContextType = any> = {
+  Date?: GraphQLScalarType,
+  DateTime?: GraphQLScalarType,
   Ingredient?: IngredientResolvers<ContextType>,
+  Meal?: MealResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Recipe?: RecipeResolvers<ContextType>,
   RecipeIngredient?: RecipeIngredientResolvers<ContextType>,
   RecipeStep?: RecipeStepResolvers<ContextType>,
   Result?: ResultResolvers<ContextType>,
+  Time?: GraphQLScalarType,
   Token?: TokenResolvers<ContextType>,
   TokenResult?: TokenResultResolvers<ContextType>,
   Upload?: GraphQLScalarType,
