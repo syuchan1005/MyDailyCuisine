@@ -183,7 +183,7 @@ const Calendar: FC = (props) => {
           <>
             <DialogTitle>
               {clickedEvent.resource.name}
-              <Typography variant="subtitle1">
+              <Typography variant="subtitle1" component="div">
                 {format(new Date(clickedEvent.resource.time), 'yyyy/MM/dd HH:mm')}
               </Typography>
             </DialogTitle>
