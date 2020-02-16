@@ -1,0 +1,7 @@
+.idea
+dist
+node_modules
+storage
+*.iml
+*.sqlite
+.DS_Store
