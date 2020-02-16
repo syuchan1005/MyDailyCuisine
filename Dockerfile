@@ -4,10 +4,12 @@ COPY . /build
 
 WORKDIR /build
 
-RUN npm ci && npm run build \
+RUN apk add --no-cache python build-base \
+    && npm ci && npm run build \
     && mkdir /MyDailyCuisine \
     && mkdir /MyDailyCuisine/src \
     && mv dist/ /MyDailyCuisine/ \
+    && mv node_modules/ /MyDailyCuisine/ \
     && cp -r /MyDailyCuisine/dist/client /MyDailyCuisine/public/ \
     && mv src/server/ /MyDailyCuisine/src/server/ \
     && mv .sequelizerc /MyDailyCuisine/ \
@@ -17,20 +19,20 @@ RUN npm ci && npm run build \
 FROM node:12.13.0-alpine
 
 LABEL maintainer="syuchan1005<syuchan.dev@gmail.com>"
-LABEL name="BookReader"
+LABEL name="MyDailyCuisine"
 
 EXPOSE 80
 
 ENV DEBUG=""
 
-RUN apk add --no-cache supervisor nginx imagemagick libwebp-tools \
+RUN apk add --no-cache supervisor nginx graphicsmagick \
     && mkdir /MyDailyCuisine
 
-COPY --from=build ["/MyDailyCuisine/package.json", "/MyDailyCuisine/package-lock.json", "/MyDailyCuisine/"]
+COPY --from=build ["/MyDailyCuisine/node_modules", "/MyDailyCuisine/package.json", "/MyDailyCuisine/package-lock.json", "/MyDailyCuisine/"]
 
 WORKDIR /MyDailyCuisine
 
-RUN npm ci
+# RUN npm ci
 
 COPY nginx.conf /etc/nginx/
 COPY supervisord.conf /etc/
