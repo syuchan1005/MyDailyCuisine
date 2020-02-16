@@ -7,7 +7,7 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import { Add as AddIcon, Refresh } from '@material-ui/icons';
+import { Add as AddIcon, Refresh, CalendarToday as CalendarIcon } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { commonTheme } from '@client/App';
 import RecipeAddDialog from '@client/component/RecipeAddDialog';
@@ -60,12 +60,20 @@ const Recipes: FC = (props) => {
             Recipes
           </Typography>
           <HeaderAuthButton>
-            <IconButton
-              className={classes.addIcon}
-              onClick={() => setOpenAddDialog(true)}
-            >
-              <AddIcon />
-            </IconButton>
+            <>
+              <IconButton
+                className={classes.addIcon}
+                onClick={() => history.push('/calendar')}
+              >
+                <CalendarIcon />
+              </IconButton>
+              <IconButton
+                className={classes.addIcon}
+                onClick={() => setOpenAddDialog(true)}
+              >
+                <AddIcon />
+              </IconButton>
+            </>
           </HeaderAuthButton>
         </Toolbar>
       </AppBar>

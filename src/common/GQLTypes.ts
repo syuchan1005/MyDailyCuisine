@@ -234,7 +234,7 @@ export type MealsQuery = (
     & Pick<Meal, 'id' | 'time' | 'name' | 'description'>
     & { recipe: Maybe<(
       { __typename?: 'Recipe' }
-      & Pick<Recipe, 'id' | 'name' | 'image'>
+      & Pick<Recipe, 'id' | 'image' | 'name' | 'description'>
     )> }
   )> }
 );

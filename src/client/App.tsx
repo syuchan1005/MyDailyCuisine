@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import {
   BrowserRouter,
   Route,
+  Redirect,
   Switch,
 } from 'react-router-dom';
 import {
@@ -15,6 +16,10 @@ import Recipes from '@client/pages/Recipes';
 import { orange, red } from '@material-ui/core/colors';
 import Recipe from '@client/pages/Recipe';
 import Calendar from '@client/pages/Calendar';
+import Error from '@client/pages/Error';
+
+import { useSelector } from 'react-redux';
+import { getAuth } from '@client/store/modules/authModule';
 
 export const commonTheme = {
   safeArea: {
@@ -69,13 +74,21 @@ const App: FC = () => {
     },
   });
 
+  const auth = useSelector(getAuth);
+
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
         <Switch>
-          <Route exact path={['/recipes', '/']} component={Recipes} />
+          <Route exact path="/">
+            <Redirect to="/recipes" />
+          </Route>
+          <Route exact path="/recipes" component={Recipes} />
           <Route exact path="/recipe/:id" component={Recipe} />
-          <Route exact path="/calendar" component={Calendar} />
+          <Route exact path="/calendar">
+            {!auth.accessToken ? <Redirect to="/" /> : (<Calendar />)}
+          </Route>
+          <Route component={Error} />
         </Switch>
       </BrowserRouter>
     </ThemeProvider>

@@ -4,7 +4,7 @@ import React, {
   useCallback,
   useState,
 } from 'react';
-import { Button } from '@material-ui/core';
+import { Button, useMediaQuery, useTheme } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 
 import SignDialog from '@client/component/SignDialog';
@@ -17,6 +17,9 @@ type HeaderAuthButtonProps = {
 const HeaderAuthButton: FC = (props: HeaderAuthButtonProps) => {
   const dispatch = useDispatch();
   const auth = useSelector(getAuth);
+
+  const theme = useTheme();
+  const upSm = useMediaQuery(theme.breakpoints.up('sm'));
 
   const [openSignDialog, setOpenSignDialog] = useState(false);
   const [signUp, setSignUp] = useState(false);
@@ -34,7 +37,10 @@ const HeaderAuthButton: FC = (props: HeaderAuthButtonProps) => {
     return (
       <>
         {props.children}
-        <Button onClick={clickSignOut}>
+        <Button
+          size={upSm ? 'medium' : 'small'}
+          onClick={clickSignOut}
+        >
           Sign out
         </Button>
       </>

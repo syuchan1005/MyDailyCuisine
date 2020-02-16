@@ -129,7 +129,7 @@ const Recipe: FC = (props) => {
       </Backdrop>
       <AppBar>
         <Toolbar>
-          <IconButton onClick={() => history.push('/recipes')}>
+          <IconButton onClick={() => history.goBack()}>
             <ArrowBack />
           </IconButton>
           <Typography variant="h6" style={{ flexGrow: 1 }}>

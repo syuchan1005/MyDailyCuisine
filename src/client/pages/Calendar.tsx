@@ -7,13 +7,14 @@ import {
   makeStyles,
   Theme,
   Toolbar,
-  Typography,
+  Typography, useMediaQuery, useTheme,
 } from '@material-ui/core';
 import {
   Add as AddIcon,
   KeyboardArrowLeft,
   KeyboardArrowRight,
-  Refresh,
+  Refresh, Today,
+  ViewModule as ModuleIcon,
 } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 
@@ -68,8 +69,10 @@ const Calendar: FC = (props) => {
   const classes = useStyles(props);
   const history = useHistory();
 
-  const [openAddMealDialog, setOpenAddMealDialog] = useState(false);
+  const theme = useTheme();
+  const upSm = useMediaQuery(theme.breakpoints.up('sm'));
 
+  const [openAddMealDialog, setOpenAddMealDialog] = useState(false);
   const [clickedEvent, setClickedEvent] = useState<CalendarEvent>(undefined);
 
   const {
@@ -97,12 +100,21 @@ const Calendar: FC = (props) => {
           toolbar: (toolbar) => (
             <AppBar position="relative" elevation={0}>
               <Toolbar>
-                <Button
-                  variant="outlined"
-                  onClick={() => toolbar.onNavigate('TODAY')}
-                >
-                  Today
-                </Button>
+                {(!upSm) ? (
+                  <IconButton
+                    size="small"
+                    onClick={() => toolbar.onNavigate('TODAY')}
+                  >
+                    <Today />
+                  </IconButton>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    onClick={() => toolbar.onNavigate('TODAY')}
+                  >
+                    Today
+                  </Button>
+                )}
                 <div className={classes.arrowButtonWrapper}>
                   <IconButton
                     size="small"
@@ -117,16 +129,32 @@ const Calendar: FC = (props) => {
                     <KeyboardArrowRight />
                   </IconButton>
                 </div>
-                <Typography variant="h6" style={{ flexGrow: 1 }}>
+                <Typography
+                  variant="h6"
+                  style={{
+                    flexGrow: 1,
+                    fontSize: (!upSm ? '0.8rem' : '1.25rem'),
+                  }}
+                >
                   {toolbar.label}
                 </Typography>
                 <HeaderAuthButton>
-                  <IconButton
-                    className={classes.addIcon}
-                    onClick={() => setOpenAddMealDialog(true)}
-                  >
-                    <AddIcon />
-                  </IconButton>
+                  <>
+                    <IconButton
+                      size={!upSm ? 'small' : 'medium'}
+                      className={classes.addIcon}
+                      onClick={() => history.push('/recipes')}
+                    >
+                      <ModuleIcon />
+                    </IconButton>
+                    <IconButton
+                      size={!upSm ? 'small' : 'medium'}
+                      className={classes.addIcon}
+                      onClick={() => setOpenAddMealDialog(true)}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </>
                 </HeaderAuthButton>
               </Toolbar>
             </AppBar>
