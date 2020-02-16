@@ -96,6 +96,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     right: theme.spacing(2),
     bottom: theme.spacing(2),
   },
+  groupName: {
+    '&::before, &::after': {
+      display: 'inline-block',
+      content: '""',
+      borderTop: '2px solid black',
+      width: theme.spacing(1.5),
+      margin: theme.spacing(0, 0.5),
+      transform: 'translateY(-0.35rem)',
+    },
+  },
 }));
 
 const Recipe: FC = (props) => {
@@ -190,7 +200,9 @@ const Recipe: FC = (props) => {
                       (k && k.length > 0) ? (
                         <TableRow key={k}>
                           <TableCell colSpan={2}>
-                            <Typography>{k}</Typography>
+                            <Typography className={classes.groupName}>
+                              {k}
+                            </Typography>
                           </TableCell>
                         </TableRow>
                       ) : undefined,
