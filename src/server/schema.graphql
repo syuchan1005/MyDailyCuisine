@@ -1,14 +1,23 @@
 scalar Upload
+scalar Date
+scalar Time
+scalar DateTime
 
 type Query {
   ## RecipeMiddleware
   recipes: [Recipe!]!
   recipe(id: ID!): Recipe
+
+  ## MealMiddleware
+  meals: [Meal!]!
 }
 
 type Mutation {
   ## RecipeMiddleware
   addRecipe(recipe: InputRecipe!): Result!
+
+  ## MealMiddleware
+  addMeal(meal: InputMeal!): Result!
 
   ## AuthMiddleware
   signUp(name: String!, password: String!): TokenResult!
@@ -77,6 +86,15 @@ type Ingredient {
   name: String!
 }
 
+type Meal {
+  id: ID!
+  time: DateTime!
+  name: String!
+  description: String!
+
+  recipe: Recipe
+}
+
 input InputRecipe {
   image: Upload
   name: String!
@@ -100,4 +118,11 @@ input InputIngredient {
   name: String!
   amount: String!
   groupName: String
+}
+
+input InputMeal {
+  time: DateTime!
+  name: String!
+  description: String!
+  recipeId: ID!
 }

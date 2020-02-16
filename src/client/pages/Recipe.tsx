@@ -1,24 +1,24 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import {
   AppBar,
-  Backdrop,
+  Backdrop, Button,
   Card,
   CardContent,
   CircularProgress,
-  createStyles,
+  createStyles, Fab,
   IconButton,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
-  TableRow,
+  TableRow, TextField,
   Theme,
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import { ArrowBack } from '@material-ui/icons';
+import { ArrowBack, Refresh } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { commonTheme } from '@client/App';
@@ -83,6 +83,29 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   howMany: {
     marginLeft: theme.spacing(1),
   },
+  userWrapper: {
+    display: 'flex',
+    alignItems: 'baseline',
+  },
+  userLabel: {
+    flexGrow: 1,
+    textAlign: 'end',
+  },
+  fab: {
+    position: 'fixed',
+    right: theme.spacing(2),
+    bottom: theme.spacing(2),
+  },
+  groupName: {
+    '&::before, &::after': {
+      display: 'inline-block',
+      content: '""',
+      borderTop: '2px solid black',
+      width: theme.spacing(1.5),
+      margin: theme.spacing(0, 0.5),
+      transform: 'translateY(-0.35rem)',
+    },
+  },
 }));
 
 const Recipe: FC = (props) => {
@@ -93,9 +116,21 @@ const Recipe: FC = (props) => {
   const {
     data,
     loading,
+    refetch,
   } = useQuery<RecipeQueryData, RecipeQueryVariables>(RecipeQuery, {
     variables: { id },
   });
+
+  const ingredients = useMemo(() => {
+    if (!data?.recipe.ingredients) return {};
+    return data.recipe.ingredients.reduce((obj, ing) => {
+      const g = ing.groupName ?? '';
+      // eslint-disable-next-line no-param-reassign
+      if (!obj[g]) obj[g] = [];
+      obj[g].push(ing);
+      return obj;
+    }, {});
+  }, [data]);
 
   return (
     <>
@@ -104,7 +139,7 @@ const Recipe: FC = (props) => {
       </Backdrop>
       <AppBar>
         <Toolbar>
-          <IconButton onClick={() => history.push('/recipes')}>
+          <IconButton onClick={() => history.goBack()}>
             <ArrowBack />
           </IconButton>
           <Typography variant="h6" style={{ flexGrow: 1 }}>
@@ -118,7 +153,11 @@ const Recipe: FC = (props) => {
           <div className={classes.data}>
             <div className={classes.imageWrapper}>
               {(data.recipe.image) ? (
-                <img className={classes.image} src={`/recipe/${data.recipe.id}.jpg`} alt="recipe" />
+                <img
+                  className={classes.image}
+                  src={`/recipe/${data.recipe.id}_280x487^c.jpg`}
+                  alt="recipe"
+                />
               ) : (
                 <Card className={classes.noImage} elevation={3}>
                   <div>No Image</div>
@@ -128,8 +167,19 @@ const Recipe: FC = (props) => {
             <div>
               <Typography variant="h4">{data.recipe.name}</Typography>
               <Typography variant="subtitle1">{data.recipe.nameHiragana}</Typography>
+              <Typography variant="subtitle2" className={classes.userWrapper}>
+                {/* onClick={() => history.push(`/user/${data.recipe.user.id}`)} */}
+                <span className={classes.userLabel}>User:</span>
+                <Button>
+                  {data.recipe.user.name}
+                </Button>
+              </Typography>
             </div>
-            <Typography variant="body1">{data.recipe.description}</Typography>
+            <TextField
+              multiline
+              label="Description"
+              value={data.recipe.description}
+            />
             <div>
               <div className={classes.ingredientHeader}>
                 <Typography variant="h6">
@@ -141,30 +191,43 @@ const Recipe: FC = (props) => {
                 <Table size="small">
                   <TableHead>
                     <TableRow>
-                      <TableCell>GroupName</TableCell>
                       <TableCell>Name</TableCell>
                       <TableCell align="right">Amount</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {data.recipe.ingredients.map((ingredient) => (
-                      <TableRow key={ingredient.id}>
-                        <TableCell>{ingredient.groupName ?? ''}</TableCell>
-                        <TableCell>{ingredient.ingredient.name}</TableCell>
-                        <TableCell>{ingredient.amount}</TableCell>
-                      </TableRow>
-                    ))}
+                    {Object.keys(ingredients).map((k) => [
+                      (k && k.length > 0) ? (
+                        <TableRow key={k}>
+                          <TableCell colSpan={2}>
+                            <Typography className={classes.groupName}>
+                              {k}
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      ) : undefined,
+                      ...ingredients[k].map((ingredient) => (
+                        <TableRow key={ingredient.id}>
+                          {/* <TableCell>{ingredient.groupName ?? ''}</TableCell> */}
+                          <TableCell>{ingredient.ingredient.name}</TableCell>
+                          <TableCell align="right">{ingredient.amount}</TableCell>
+                        </TableRow>
+                      )),
+                    ])}
                   </TableBody>
                 </Table>
               </TableContainer>
             </div>
+            <Typography variant="h6">
+              How to
+            </Typography>
             <div className={classes.stepGrid}>
               {data.recipe.steps.sort((a, b) => a.step - b.step).map((step) => (
                 <Card key={step.id}>
                   {(step.image) && (
                     <img
                       className={classes.stepImage}
-                      src={`/step/${step.id}.jpg`}
+                      src={`/step/${step.id}_160x.jpg`}
                       alt="step"
                     />
                   )}
@@ -175,10 +238,22 @@ const Recipe: FC = (props) => {
                 </Card>
               ))}
             </div>
-            <Typography variant="body1">{data.recipe.trick}</Typography>
-            <Typography variant="body1">{data.recipe.background}</Typography>
+            <TextField
+              multiline
+              label="Trick"
+              value={data.recipe.trick}
+            />
+            <TextField
+              multiline
+              label="Background of this recipe"
+              value={data.recipe.background}
+            />
           </div>
         )}
+
+        <Fab className={classes.fab} color="secondary" onClick={() => refetch()}>
+          <Refresh />
+        </Fab>
       </main>
     </>
   );

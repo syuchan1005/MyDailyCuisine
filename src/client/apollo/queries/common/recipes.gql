@@ -1,3 +1,5 @@
+# pages/Recipes
+# component/RecipeSelectDialog
 query Recipes {
   recipes {
     id

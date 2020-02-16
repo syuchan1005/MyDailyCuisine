@@ -40,7 +40,7 @@ const RecipeCard: FC<RecipeCardProps> = (props: RecipeCardProps) => {
         {(image) && (
           <img
             className={classes.media}
-            src={`recipe/${id}.jpg`}
+            src={`recipe/${id}_x140.jpg`}
             alt="recipe"
           />
         )}

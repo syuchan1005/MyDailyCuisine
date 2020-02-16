@@ -1,0 +1,7 @@
+mutation addMeal($meal: InputMeal!) {
+  addMeal(meal: $meal) {
+    success
+    code
+    message
+  }
+}
