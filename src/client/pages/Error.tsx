@@ -8,7 +8,7 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import useMetaTags from 'react-metatags-hook';
+import { Helmet } from 'react-helmet';
 
 const useStyles = makeStyles(() => createStyles({
   main: {
@@ -23,22 +23,16 @@ const Error: FC = (props) => {
   const classes = useStyles(props);
   const history = useHistory();
 
-  useMetaTags({
-    title: 'Error - My Daily Cuisine',
-    description: 'error page',
-    openGraph: {
-      title: 'Error - My Daily Cuisine',
-      site_name: 'My Daily Cuisine',
-    },
-    twitter: {
-      card: 'summary',
-      creator: '@syu_chan_1005',
-      title: 'Error - My Daily Cuisine',
-    },
-  }, []);
-
   return (
     <>
+      <Helmet>
+        <title>Error - My Daily Cuisine</title>
+        <meta name="description" content="my daily cuisine" />
+        <meta property="og:title" content="Error - My Daily Cuisine" />
+        <meta property="og:site_name" content="My Daily Cuisine" />
+        <meta property="twitter:card" content="summary" />
+        <meta property="twitter:title" content="Error - My Daily Cuisine" />
+      </Helmet>
       <AppBar>
         <Toolbar>
           <Typography variant="h6">

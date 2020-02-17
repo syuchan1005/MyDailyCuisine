@@ -8,6 +8,8 @@ import {
   RefreshTokenMutation as RefreshTokenMutationData,
   RefreshTokenMutationVariables,
 } from '@common/GQLTypes';
+import { BrowserRouter } from 'react-router-dom';
+
 import RefreshTokenMutation from '@queries/index_refreshToken.gql';
 import store from '@client/store';
 import getClient from '@client/apollo/index';
@@ -45,7 +47,9 @@ regSW();
     (
       <ReduxProvider store={store}>
         <ApolloProvider client={client}>
-          <App />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
         </ApolloProvider>
       </ReduxProvider>
     ),

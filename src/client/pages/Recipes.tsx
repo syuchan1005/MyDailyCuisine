@@ -19,12 +19,12 @@ import RecipeAddDialog from '@client/component/RecipeAddDialog';
 import RecipeCard from '@client/component/RecipeCard';
 import { useQuery } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import { RecipesQuery as RecipesQueryData, RecipesQueryVariables } from '@common/GQLTypes.ts';
 import RecipesQuery from '@queries/common/recipes.gql';
 
 import HeaderAuthButton from '@client/component/HeaderAuthButton';
-import useMetaTags from 'react-metatags-hook';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   recipes: {
@@ -59,20 +59,6 @@ const Recipes: FC = (props) => {
   const classes = useStyles(props);
   const history = useHistory();
 
-  useMetaTags({
-    title: 'Recipes - My Daily Cuisine',
-    description: 'recipes page',
-    openGraph: {
-      title: 'Recipes - My Daily Cuisine',
-      site_name: 'My Daily Cuisine',
-    },
-    twitter: {
-      card: 'summary',
-      creator: '@syu_chan_1005',
-      title: 'Recipes - My Daily Cuisine',
-    },
-  }, []);
-
   const [openAddDialog, setOpenAddDialog] = useState(false);
 
   const {
@@ -82,6 +68,14 @@ const Recipes: FC = (props) => {
 
   return (
     <>
+      <Helmet>
+        <title>Recipes - My Daily Cuisine</title>
+        <meta name="description" content="my daily cuisine" />
+        <meta property="og:title" content="Recipes - My Daily Cuisine" />
+        <meta property="og:site_name" content="My Daily Cuisine" />
+        <meta property="twitter:card" content="summary" />
+        <meta property="twitter:title" content="Recipes - My Daily Cuisine" />
+      </Helmet>
       <AppBar>
         <Toolbar>
           <Typography variant="h6" style={{ flexGrow: 1 }}>

@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import {
-  BrowserRouter,
   Redirect,
   Route,
   Switch,
@@ -15,6 +14,7 @@ import {
 import { orange, red } from '@material-ui/core/colors';
 import { hot } from 'react-hot-loader/root';
 import loadable from '@loadable/component';
+import { Helmet } from 'react-helmet';
 
 const fallback = (
   <Backdrop open timeout={-1}>
@@ -82,17 +82,19 @@ const App: FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/">
-            <Redirect to="/recipes" />
-          </Route>
-          <Route exact path="/recipes" component={Recipes} />
-          <Route exact path="/recipe/:id" component={Recipe} />
-          <Route exact path="/calendar" component={Calendar} />
-          <Route component={Error} />
-        </Switch>
-      </BrowserRouter>
+      <Helmet>
+        <title>My Daily Cuisine</title>
+        <meta name="description" content="my daily cuisine" />
+      </Helmet>
+      <Switch>
+        <Route exact path="/">
+          <Redirect to="/recipes" />
+        </Route>
+        <Route exact path="/recipes" component={Recipes} />
+        <Route exact path="/recipe/:id" component={Recipe} />
+        <Route exact path="/calendar" component={Calendar} />
+        <Route component={Error} />
+      </Switch>
     </ThemeProvider>
   );
 };

@@ -17,6 +17,7 @@ import {
   ViewModule as ModuleIcon,
 } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import { Calendar as BigCalendar, dateFnsLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -37,7 +38,6 @@ import { Meal, MealsQuery as MealsQueryData, MealsQueryVariables } from '@common
 import MealsQuery from '@queries/pages_calendar_meals.gql';
 import MealAddDialog from '@client/component/MealAddDialog';
 import SignDialog from '@client/component/SignDialog';
-import useMetaTags from 'react-metatags-hook';
 
 const localizer = dateFnsLocalizer({
   format,
@@ -77,20 +77,6 @@ const Calendar: FC = (props) => {
   const classes = useStyles(props);
   const history = useHistory();
 
-  useMetaTags({
-    title: 'Calendar - My Daily Cuisine',
-    description: 'calendar page',
-    openGraph: {
-      title: 'Calendar - My Daily Cuisine',
-      site_name: 'My Daily Cuisine',
-    },
-    twitter: {
-      card: 'summary',
-      creator: '@syu_chan_1005',
-      title: 'Calendar - My Daily Cuisine',
-    },
-  }, []);
-
   const theme = useTheme();
   const upSm = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -117,6 +103,14 @@ const Calendar: FC = (props) => {
 
   return (
     <>
+      <Helmet>
+        <title>Calendar - My Daily Cuisine</title>
+        <meta name="description" content="my daily cuisine" />
+        <meta property="og:title" content="Calendar - My Daily Cuisine" />
+        <meta property="og:site_name" content="My Daily Cuisine" />
+        <meta property="twitter:card" content="summary" />
+        <meta property="twitter:title" content="Calendar - My Daily Cuisine" />
+      </Helmet>
       <SignDialog
         open={!auth.expires || auth.expires < Date.now()}
         signUp={signUp}

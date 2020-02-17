@@ -17,9 +17,10 @@ import {
   Theme,
   Toolbar,
   Typography,
+  makeStyles,
 } from '@material-ui/core';
 import { ArrowBack, FastfoodOutlined, Refresh } from '@material-ui/icons';
-import { makeStyles } from '@material-ui/core/styles';
+import { Helmet } from 'react-helmet';
 
 import { commonTheme } from '@client/App';
 import { useQuery } from '@apollo/react-hooks';
@@ -27,7 +28,7 @@ import { RecipeQuery as RecipeQueryData, RecipeQueryVariables } from '@common/GQ
 import RecipeQuery from '@queries/pages_recipe_recipe.gql';
 import { common } from '@material-ui/core/colors';
 import HeaderAuthButton from '@client/component/HeaderAuthButton';
-import useMetaTags from 'react-metatags-hook';
+
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   recipe: commonTheme.appbar(theme, 'paddingTop'),
@@ -130,21 +131,6 @@ const Recipe: FC = (props) => {
     variables: { id },
   });
 
-  useMetaTags({
-    title: `${(data && data.recipe) ? `${data.recipe.name} Recipe` : 'Recipe'} - My Daily Cuisine`,
-    description: `${(data && data.recipe) ? `${data.recipe.name} recipe` : 'recipe'} page`,
-    openGraph: {
-      title: `${(data && data.recipe) ? `${data.recipe.name} Recipe` : 'Recipe'} - My Daily Cuisine`,
-      site_name: 'My Daily Cuisine',
-      image: ((data?.recipe?.image) ? `/recipe/${data.recipe.id}_300x300^c.jpg` : undefined),
-    },
-    twitter: {
-      card: 'summary',
-      creator: '@syu_chan_1005',
-      title: `${(data && data.recipe) ? `${data.recipe.name} Recipe` : 'Recipe'} - My Daily Cuisine`,
-    },
-  }, [data]);
-
   const ingredients = useMemo(() => {
     if (!data || !data.recipe) return {};
     return data.recipe.ingredients.reduce((obj, ing) => {
@@ -158,6 +144,14 @@ const Recipe: FC = (props) => {
 
   return (
     <>
+      <Helmet>
+        <title>{`${(data && data.recipe) ? `${data.recipe.name} ` : ''}Recipe - My Daily Cuisine`}</title>
+        <meta name="description" content={`${(data && data.recipe) ? `${data.recipe.name} ` : ''}recipe page`} />
+        <meta property="og:title" content={`${(data && data.recipe) ? `${data.recipe.name} ` : ''}Recipe - My Daily Cuisine`} />
+        <meta property="og:site_name" content="My Daily Cuisine" />
+        <meta property="twitter:card" content="summary" />
+        <meta property="twitter:title" content={`${(data && data.recipe) ? `${data.recipe.name} ` : ''}Recipe - My Daily Cuisine`} />
+      </Helmet>
       <Backdrop className={classes.backdrop} open={loading} timeout={-1}>
         <CircularProgress color="inherit" />
       </Backdrop>
