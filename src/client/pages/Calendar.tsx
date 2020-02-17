@@ -10,7 +10,7 @@ import {
   Typography, useMediaQuery, useTheme,
 } from '@material-ui/core';
 import {
-  Add as AddIcon,
+  Add as AddIcon, ArrowBack,
   KeyboardArrowLeft,
   KeyboardArrowRight,
   Refresh, Today,
@@ -27,12 +27,16 @@ import startOfWeek from 'date-fns/startOfWeek';
 import getDay from 'date-fns/getDay';
 import enLocale from 'date-fns/locale/en-US';
 
+import { useSelector } from 'react-redux';
+import { getAuth } from '@client/store/modules/authModule';
+
 import HeaderAuthButton from '@client/component/HeaderAuthButton';
 import { useQuery } from '@apollo/react-hooks';
 
 import { Meal, MealsQuery as MealsQueryData, MealsQueryVariables } from '@common/GQLTypes';
 import MealsQuery from '@queries/pages_calendar_meals.gql';
 import MealAddDialog from '@client/component/MealAddDialog';
+import SignDialog from '@client/component/SignDialog';
 
 const localizer = dateFnsLocalizer({
   format,
@@ -63,6 +67,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   addIcon: {
     color: theme.palette.primary.contrastText,
   },
+  signBackdrop: {
+    zIndex: theme.zIndex.modal + 1,
+  },
 }));
 
 const Calendar: FC = (props) => {
@@ -71,6 +78,9 @@ const Calendar: FC = (props) => {
 
   const theme = useTheme();
   const upSm = useMediaQuery(theme.breakpoints.up('sm'));
+
+  const [signUp, setSignUp] = useState(false);
+  const auth = useSelector(getAuth);
 
   const [openAddMealDialog, setOpenAddMealDialog] = useState(false);
   const [clickedEvent, setClickedEvent] = useState<CalendarEvent>(undefined);
@@ -92,6 +102,22 @@ const Calendar: FC = (props) => {
 
   return (
     <>
+      <SignDialog
+        open={!auth.expires || auth.expires < Date.now()}
+        signUp={signUp}
+        onChange={setSignUp}
+      >
+        <div>
+          <IconButton onClick={() => history.goBack()}>
+            <ArrowBack />
+          </IconButton>
+        </div>
+        <DialogContent>
+          <DialogContentText>
+            Sign in required to use Calendar
+          </DialogContentText>
+        </DialogContent>
+      </SignDialog>
       <BigCalendar
         localizer={localizer}
         events={events}

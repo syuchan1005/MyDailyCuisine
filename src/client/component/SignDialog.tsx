@@ -1,4 +1,9 @@
-import React, { FC, useCallback, useState } from 'react';
+import React, {
+  FC,
+  ReactNode,
+  useCallback,
+  useState,
+} from 'react';
 import {
   Backdrop,
   Button, CircularProgress,
@@ -29,6 +34,7 @@ interface SignDialogProps {
   signUp?: boolean;
   onClose?: () => void;
   onChange?: (signUp: boolean) => void;
+  children?: ReactNode;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -50,6 +56,7 @@ const SignDialog: FC<SignDialogProps> = (props: SignDialogProps) => {
     signUp,
     onClose,
     onChange,
+    children,
   } = props;
 
   const [name, setName] = useState('');
@@ -92,6 +99,7 @@ const SignDialog: FC<SignDialogProps> = (props: SignDialogProps) => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
+      {children}
       <DialogTitle>{signUp ? 'Sign up' : 'Sign in'}</DialogTitle>
       <DialogContent className={classes.dialogContent}>
         <TextField

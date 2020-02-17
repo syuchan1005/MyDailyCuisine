@@ -18,7 +18,7 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import { ArrowBack, Refresh } from '@material-ui/icons';
+import { ArrowBack, FastfoodOutlined, Refresh } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { commonTheme } from '@client/App';
@@ -106,6 +106,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       transform: 'translateY(-0.35rem)',
     },
   },
+  centering: {
+    marginTop: theme.spacing(1),
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 }));
 
 const Recipe: FC = (props) => {
@@ -122,7 +130,7 @@ const Recipe: FC = (props) => {
   });
 
   const ingredients = useMemo(() => {
-    if (!data?.recipe.ingredients) return {};
+    if (!data || !data.recipe) return {};
     return data.recipe.ingredients.reduce((obj, ing) => {
       const g = ing.groupName ?? '';
       // eslint-disable-next-line no-param-reassign
@@ -149,7 +157,7 @@ const Recipe: FC = (props) => {
         </Toolbar>
       </AppBar>
       <main className={classes.recipe}>
-        {(data) && (
+        {(data && data.recipe) ? (
           <div className={classes.data}>
             <div className={classes.imageWrapper}>
               {(data.recipe.image) ? (
@@ -248,6 +256,11 @@ const Recipe: FC = (props) => {
               label="Background of this recipe"
               value={data.recipe.background}
             />
+          </div>
+        ) : (
+          <div className={classes.centering}>
+            <FastfoodOutlined style={{ fontSize: '40vw' }} />
+            <div style={{ fontSize: '2rem' }}>No Recipe</div>
           </div>
         )}
 

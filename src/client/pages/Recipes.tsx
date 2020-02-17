@@ -7,7 +7,12 @@ import {
   Toolbar,
   Typography,
 } from '@material-ui/core';
-import { Add as AddIcon, Refresh, CalendarToday as CalendarIcon } from '@material-ui/icons';
+import {
+  Add as AddIcon,
+  Refresh,
+  CalendarToday as CalendarIcon,
+  FastfoodOutlined,
+} from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { commonTheme } from '@client/App';
 import RecipeAddDialog from '@client/component/RecipeAddDialog';
@@ -38,6 +43,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     position: 'fixed',
     right: theme.spacing(2),
     bottom: theme.spacing(2),
+  },
+  centering: {
+    marginTop: theme.spacing(1),
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 }));
 
@@ -78,15 +91,22 @@ const Recipes: FC = (props) => {
         </Toolbar>
       </AppBar>
       <main className={classes.recipes}>
-        <div className={classes.grid}>
-          {data?.recipes.map((recipe) => (
-            <RecipeCard
-              key={recipe.id}
-              {...recipe}
-              onClick={() => history.push(`/recipe/${recipe.id}`)}
-            />
-          ))}
-        </div>
+        {(!data || data.recipes.length === 0) ? (
+          <div className={classes.centering}>
+            <FastfoodOutlined style={{ fontSize: '40vw' }} />
+            <Typography variant="subtitle1">You must be sign in to add</Typography>
+          </div>
+        ) : (
+          <div className={classes.grid}>
+            {data.recipes.map((recipe) => (
+              <RecipeCard
+                key={recipe.id}
+                {...recipe}
+                onClick={() => history.push(`/recipe/${recipe.id}`)}
+              />
+            ))}
+          </div>
+        )}
 
         <Fab className={classes.fab} color="secondary" onClick={() => refetch()}>
           <Refresh />
