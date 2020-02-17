@@ -5,14 +5,27 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-import { createMuiTheme, Theme, ThemeProvider } from '@material-ui/core';
-import { hot } from 'react-hot-loader/root';
-
-import Recipes from '@client/pages/Recipes';
+import {
+  Backdrop,
+  CircularProgress,
+  createMuiTheme,
+  Theme,
+  ThemeProvider,
+} from '@material-ui/core';
 import { orange, red } from '@material-ui/core/colors';
-import Recipe from '@client/pages/Recipe';
-import Calendar from '@client/pages/Calendar';
-import Error from '@client/pages/Error';
+import { hot } from 'react-hot-loader/root';
+import loadable from '@loadable/component';
+
+const fallback = (
+  <Backdrop open timeout={-1}>
+    <CircularProgress style={{ color: 'white' }} />
+  </Backdrop>
+);
+
+const Recipes = loadable(() => import(/* webpackChunkName: "Recipes" */'@client/pages/Recipes'), { fallback });
+const Recipe = loadable(() => import(/* webpackChunkName: "Recipe" */'@client/pages/Recipe'), { fallback });
+const Calendar = loadable(() => import(/* webpackChunkName: "Calendar" */'@client/pages/Calendar'), { fallback });
+const Error = loadable(() => import(/* webpackChunkName: "Error" */'@client/pages/Error'), { fallback });
 
 export const commonTheme = {
   safeArea: {
