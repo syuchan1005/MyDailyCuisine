@@ -59,6 +59,7 @@ const HeaderAuthButton: FC = (props: HeaderAuthButtonProps) => {
         open={openSignDialog}
         signUp={signUp}
         onClose={() => setOpenSignDialog(false)}
+        onChange={setSignUp}
       />
     </>
   );

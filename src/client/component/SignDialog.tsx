@@ -6,8 +6,8 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  TextField, Theme,
+  DialogTitle, Divider,
+  TextField, Theme, Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { common } from '@material-ui/core/colors';
@@ -28,6 +28,7 @@ interface SignDialogProps {
   open?: boolean;
   signUp?: boolean;
   onClose?: () => void;
+  onChange?: (signUp: boolean) => void;
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -48,6 +49,7 @@ const SignDialog: FC<SignDialogProps> = (props: SignDialogProps) => {
     open,
     signUp,
     onClose,
+    onChange,
   } = props;
 
   const [name, setName] = useState('');
@@ -92,7 +94,11 @@ const SignDialog: FC<SignDialogProps> = (props: SignDialogProps) => {
       </Backdrop>
       <DialogTitle>{signUp ? 'Sign up' : 'Sign in'}</DialogTitle>
       <DialogContent className={classes.dialogContent}>
-        <TextField label="username" value={name} onChange={(event) => setName(event.target.value)} />
+        <TextField
+          label="username"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+        />
         <TextField
           type="password"
           label="password"
@@ -108,6 +114,26 @@ const SignDialog: FC<SignDialogProps> = (props: SignDialogProps) => {
           {signUp ? 'Sign up' : 'Sign in'}
         </Button>
       </DialogActions>
+      {(onChange) && (
+        <DialogContent>
+          <Divider />
+          {(signUp) ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Typography variant="body1" component="div">Already Have?</Typography>
+              <Button onClick={() => onChange(false)}>
+                Sign in
+              </Button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <Typography variant="body1" component="div">New to Here?</Typography>
+              <Button onClick={() => onChange(true)}>
+                Create an account
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      )}
     </Dialog>
   );
 };
