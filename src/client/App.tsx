@@ -87,6 +87,7 @@ const App: FC = () => {
         <meta name="description" content="my daily cuisine" />
       </Helmet>
       <Switch>
+        {/* #link{src/server/ssr.tsx} */}
         <Route exact path="/">
           <Redirect to="/recipes" />
         </Route>

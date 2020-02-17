@@ -2,14 +2,26 @@ import { promises as fs } from 'fs';
 
 import Koa from 'koa';
 import Serve from 'koa-static';
+import Router from 'koa-router';
 import { historyApiFallback } from 'koa2-connect-history-api-fallback';
 import gm from 'gm';
+import prerender from 'prerender-node';
 
 import GraphQL from './graphql';
 import initDB from './database/models';
+import ssrRouter from './ssr';
 
 const app = new Koa();
 const graphql = new GraphQL();
+const router = new Router();
+
+app.use(async (ctx, next) => {
+  const ua = ctx.request.headers['user-agent'].toLowerCase();
+  if ((<string[]>(prerender.crawlerUserAgents)).includes(ua)) {
+    ctx.request.url = `/ogp${ctx.request.url}`;
+  }
+  await next();
+});
 
 if (process.env.NODE_ENV === 'production') {
   app.use(Serve('dist/client'));
@@ -59,6 +71,11 @@ app.use(async (ctx, next) => {
   }
   await next();
 });
+
+router.use('/ogp', ssrRouter.routes(), ssrRouter.allowedMethods());
+
+app.use(router.routes());
+app.use(router.allowedMethods());
 
 (async () => {
   await initDB();

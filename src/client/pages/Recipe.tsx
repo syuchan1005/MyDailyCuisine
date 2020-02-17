@@ -149,6 +149,9 @@ const Recipe: FC = (props) => {
         <meta name="description" content={`${(data && data.recipe) ? `${data.recipe.name} ` : ''}recipe page`} />
         <meta property="og:title" content={`${(data && data.recipe) ? `${data.recipe.name} ` : ''}Recipe - My Daily Cuisine`} />
         <meta property="og:site_name" content="My Daily Cuisine" />
+        {(data && data.recipe) ? (
+          <meta property="og:image" content={`/recipe/${data.recipe.id}_300x300^c.jpg`} />
+        ) : undefined}
         <meta property="twitter:card" content="summary" />
         <meta property="twitter:title" content={`${(data && data.recipe) ? `${data.recipe.name} ` : ''}Recipe - My Daily Cuisine`} />
       </Helmet>
