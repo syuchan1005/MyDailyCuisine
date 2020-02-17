@@ -24,6 +24,7 @@ import { RecipesQuery as RecipesQueryData, RecipesQueryVariables } from '@common
 import RecipesQuery from '@queries/common/recipes.gql';
 
 import HeaderAuthButton from '@client/component/HeaderAuthButton';
+import useMetaTags from 'react-metatags-hook';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   recipes: {
@@ -57,6 +58,20 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const Recipes: FC = (props) => {
   const classes = useStyles(props);
   const history = useHistory();
+
+  useMetaTags({
+    title: 'Recipes - My Daily Cuisine',
+    description: 'recipes page',
+    openGraph: {
+      title: 'Recipes - My Daily Cuisine',
+      site_name: 'My Daily Cuisine',
+    },
+    twitter: {
+      card: 'summary',
+      creator: '@syu_chan_1005',
+      title: 'Recipes - My Daily Cuisine',
+    },
+  }, []);
 
   const [openAddDialog, setOpenAddDialog] = useState(false);
 

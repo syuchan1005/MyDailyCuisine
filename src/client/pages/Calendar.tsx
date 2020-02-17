@@ -37,6 +37,7 @@ import { Meal, MealsQuery as MealsQueryData, MealsQueryVariables } from '@common
 import MealsQuery from '@queries/pages_calendar_meals.gql';
 import MealAddDialog from '@client/component/MealAddDialog';
 import SignDialog from '@client/component/SignDialog';
+import useMetaTags from 'react-metatags-hook';
 
 const localizer = dateFnsLocalizer({
   format,
@@ -75,6 +76,20 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 const Calendar: FC = (props) => {
   const classes = useStyles(props);
   const history = useHistory();
+
+  useMetaTags({
+    title: 'Calendar - My Daily Cuisine',
+    description: 'calendar page',
+    openGraph: {
+      title: 'Calendar - My Daily Cuisine',
+      site_name: 'My Daily Cuisine',
+    },
+    twitter: {
+      card: 'summary',
+      creator: '@syu_chan_1005',
+      title: 'Calendar - My Daily Cuisine',
+    },
+  }, []);
 
   const theme = useTheme();
   const upSm = useMediaQuery(theme.breakpoints.up('sm'));

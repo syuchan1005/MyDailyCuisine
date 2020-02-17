@@ -27,6 +27,7 @@ import { RecipeQuery as RecipeQueryData, RecipeQueryVariables } from '@common/GQ
 import RecipeQuery from '@queries/pages_recipe_recipe.gql';
 import { common } from '@material-ui/core/colors';
 import HeaderAuthButton from '@client/component/HeaderAuthButton';
+import useMetaTags from 'react-metatags-hook';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   recipe: commonTheme.appbar(theme, 'paddingTop'),
@@ -128,6 +129,21 @@ const Recipe: FC = (props) => {
   } = useQuery<RecipeQueryData, RecipeQueryVariables>(RecipeQuery, {
     variables: { id },
   });
+
+  useMetaTags({
+    title: `${(data && data.recipe) ? `${data.recipe.name} Recipe` : 'Recipe'} - My Daily Cuisine`,
+    description: `${(data && data.recipe) ? `${data.recipe.name} recipe` : 'recipe'} page`,
+    openGraph: {
+      title: `${(data && data.recipe) ? `${data.recipe.name} Recipe` : 'Recipe'} - My Daily Cuisine`,
+      site_name: 'My Daily Cuisine',
+      image: ((data?.recipe?.image) ? `/recipe/${data.recipe.id}_300x300^c.jpg` : undefined),
+    },
+    twitter: {
+      card: 'summary',
+      creator: '@syu_chan_1005',
+      title: `${(data && data.recipe) ? `${data.recipe.name} Recipe` : 'Recipe'} - My Daily Cuisine`,
+    },
+  }, [data]);
 
   const ingredients = useMemo(() => {
     if (!data || !data.recipe) return {};
