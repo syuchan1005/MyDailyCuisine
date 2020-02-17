@@ -2,9 +2,9 @@
 
 ## page screenshots
 ### Recipes
-![Recipes page](screenshots/recipes.png)
+![Recipes page](https://github.com/syuchan1005/MyDailyCuisine/raw/master/screenshots/recipes.png)
 
 ### Recipe
-![Recipe page](screenshots/recipe.png)
+![Recipe page](https://github.com/syuchan1005/MyDailyCuisine/raw/master/screenshots/recipe.png)
 ### Recipes
-![Calendar page](screenshots/calendar.png)
+![Calendar page](https://github.com/syuchan1005/MyDailyCuisine/raw/master/screenshots/calendar.png)
