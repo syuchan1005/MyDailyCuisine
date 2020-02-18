@@ -2,4 +2,6 @@
 
 npm run db:migrate -- --env production
 
-/usr/bin/supervisord
+npm run start
+
+# /usr/bin/supervisord

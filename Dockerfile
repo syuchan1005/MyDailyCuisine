@@ -9,6 +9,7 @@ RUN apk add --no-cache python build-base \
     && mkdir /MyDailyCuisine \
     && mkdir /MyDailyCuisine/src \
     && mv dist/ /MyDailyCuisine/ \
+    && mv scripts/ /MyDailyCuisine/ \
     && mv node_modules/ /MyDailyCuisine/ \
     && cp -r /MyDailyCuisine/dist/client /MyDailyCuisine/public/ \
     && mv src/server/ /MyDailyCuisine/src/server/ \
@@ -28,15 +29,7 @@ ENV DEBUG=""
 RUN apk add --no-cache supervisor nginx graphicsmagick \
     && mkdir /MyDailyCuisine
 
-COPY --from=build ["/MyDailyCuisine/package.json", "/MyDailyCuisine/package-lock.json", "/MyDailyCuisine/"]
-COPY --from=build /MyDailyCuisine/node_modules/ /MyDailyCuisine/node_modules/
-
 WORKDIR /MyDailyCuisine
-
-# RUN npm ci
-
-COPY nginx.conf /etc/nginx/
-COPY supervisord.conf /etc/
 
 COPY --from=build /MyDailyCuisine /MyDailyCuisine
 
