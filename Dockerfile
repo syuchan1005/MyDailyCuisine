@@ -28,7 +28,8 @@ ENV DEBUG=""
 RUN apk add --no-cache supervisor nginx graphicsmagick \
     && mkdir /MyDailyCuisine
 
-COPY --from=build ["/MyDailyCuisine/node_modules", "/MyDailyCuisine/package.json", "/MyDailyCuisine/package-lock.json", "/MyDailyCuisine/"]
+COPY --from=build ["/MyDailyCuisine/package.json", "/MyDailyCuisine/package-lock.json", "/MyDailyCuisine/"]
+COPY --from=build /MyDailyCuisine/node_modules/ /MyDailyCuisine/node_modules/
 
 WORKDIR /MyDailyCuisine
 

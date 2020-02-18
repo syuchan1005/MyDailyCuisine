@@ -17,16 +17,16 @@ const router = new Router();
 
 app.use(async (ctx, next) => {
   const ua = ctx.request.headers['user-agent'].toLowerCase();
-  if ((<string[]>(prerender.crawlerUserAgents)).includes(ua)) {
+  if (!ctx.request.url.startsWith('/ogp') && prerender.crawlerUserAgents.includes(ua)) {
     ctx.request.url = `/ogp${ctx.request.url}`;
   }
   await next();
 });
 
+app.use(historyApiFallback({}));
 if (process.env.NODE_ENV === 'production') {
   app.use(Serve('dist/client'));
 }
-
 app.use(Serve('storage'));
 
 app.use(async (ctx, next) => {
@@ -80,8 +80,6 @@ app.use(router.allowedMethods());
 (async () => {
   await initDB();
   await graphql.middleware(app);
-
-  app.use(historyApiFallback({}));
 
   const port = process.env.PORT || 8081;
   const server = app.listen(port, () => {
