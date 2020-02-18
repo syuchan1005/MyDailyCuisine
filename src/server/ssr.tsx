@@ -49,6 +49,7 @@ ${recipe.image ? `<meta property="og:image" content="${process.env.HOST || ''}/r
 <meta property="og:site_name" content="My Daily Cuisine" />
 <meta property="twitter:card" content="summary" />
 <meta property="twitter:title" content="${recipe.name} Recipe - My Daily Cuisine" />
+${recipe.image ? `<meta property="twitter:image" content="${process.env.HOST || ''}/recipe/${recipe.id}_300x300^c.jpg" />` : ''}
 </head></html>`.replace(/\n/g, '');
         return;
       }
