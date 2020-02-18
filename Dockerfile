@@ -26,7 +26,7 @@ EXPOSE 80
 
 ENV DEBUG="", PORT=80, HOST=""
 
-RUN apk add --no-cache supervisor nginx graphicsmagick \
+RUN apk add --no-cache graphicsmagick \
     && mkdir /MyDailyCuisine
 
 WORKDIR /MyDailyCuisine
