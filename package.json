@@ -100,6 +100,7 @@
       "debug": "^4.1.1",
       "gm": "^1.23.1",
       "graphql": "^14.5.8",
+      "graphql-constraint-directive": "^1.4.1",
       "graphql-iso-date": "^3.6.1",
       "graphql-subscriptions": "^1.1.0",
       "koa": "^2.11.0",

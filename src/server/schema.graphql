@@ -3,6 +3,24 @@ scalar Date
 scalar Time
 scalar DateTime
 
+directive @constraint(
+  # String
+  minLength: Int
+  maxLength: Int
+  startsWith: String
+  endsWith: String
+  contains: String
+  notContains: String
+  pattern: String
+  format: String ## byte, date-time, date, email, ipv4, ipv6, uri, uuid
+  # Int/Float
+  min: Int
+  max: Int
+  exclusiveMin: Int
+  exclusiveMax: Int
+  multipleOf: Int
+) on INPUT_FIELD_DEFINITION | ARGUMENT_DEFINITION
+
 type Query {
   ## RecipeMiddleware
   recipes: [Recipe!]!
@@ -20,8 +38,14 @@ type Mutation {
   addMeal(meal: InputMeal!): Result!
 
   ## AuthMiddleware
-  signUp(name: String!, password: String!): TokenResult!
-  logIn(name: String!, password: String!): TokenResult!
+  signUp(
+    name: String! @constraint(minLength: 5, maxLength: 20)
+    password: String! @constraint(minLength: 8, maxLength: 60)
+  ): TokenResult!
+  logIn(
+    name: String! @constraint(minLength: 5, maxLength: 20)
+    password: String! @constraint(minLength: 8, maxLength: 60)
+  ): TokenResult!
   refreshToken(refreshToken: String!): TokenResult!
   revokeToken(token: String!): Boolean!
 }
@@ -97,12 +121,12 @@ type Meal {
 
 input InputRecipe {
   image: Upload
-  name: String!
-  nameHiragana: String!
-  description: String!
-  howMany: String!
-  trick: String!
-  background: String!
+  name: String! @constraint(maxLength: 20)
+  nameHiragana: String! @constraint(maxLength: 60)
+  description: String! @constraint(maxLength: 60)
+  howMany: String! @constraint(maxLength: 10)
+  trick: String! @constraint(maxLength: 120)
+  background: String! @constraint(maxLength: 120)
 
   steps: [InputRecipeStep!]!
   ingredients: [InputIngredient!]!
@@ -111,18 +135,18 @@ input InputRecipe {
 input InputRecipeStep {
   step: Int!
   image: Upload
-  description: String!
+  description: String! @constraint(maxLength: 60)
 }
 
 input InputIngredient {
-  name: String!
-  amount: String!
-  groupName: String
+  name: String! @constraint(maxLength: 100)
+  amount: String! @constraint(maxLength: 50)
+  groupName: String @constraint(maxLength: 30)
 }
 
 input InputMeal {
   time: DateTime!
-  name: String!
-  description: String!
+  name: String! @constraint(maxLength: 120)
+  description: String! @constraint(maxLength: 120)
   recipeId: ID!
 }

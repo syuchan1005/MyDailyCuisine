@@ -15,6 +15,8 @@ import {
   GraphQLDateTime,
 } from 'graphql-iso-date';
 
+import ConstraintDirective from 'graphql-constraint-directive';
+
 // @ts-ignore
 import typeDefs from '@server/schema.graphql';
 import GQLMiddleware from '@server/graphql/GQLMiddleware';
@@ -75,6 +77,9 @@ export default class GraphQL {
       schema: makeExecutableSchema({
         typeDefs,
         resolvers,
+        schemaDirectives: {
+          constraint: ConstraintDirective,
+        },
       }),
       context: ({ ctx: { request: { header: { authorization } } } }): Context => {
         let token = authorization || '';
