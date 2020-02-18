@@ -111,8 +111,7 @@ export default class GraphQL {
     this.gqlKoaMiddleware = this.server.getMiddleware({});
   }
 
-  async middleware(app) {
-    // eslint-disable-next-line no-underscore-dangle
+  middleware(app) {
     app.use((ctx, next) => {
       ctx.request.socket.setTimeout(/* 15min */ 15 * 60 * 1000);
       return this.gqlKoaMiddleware(ctx, next);

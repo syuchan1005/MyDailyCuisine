@@ -23,12 +23,6 @@ app.use(async (ctx, next) => {
   await next();
 });
 
-app.use(historyApiFallback({}));
-if (process.env.NODE_ENV === 'production') {
-  app.use(Serve('dist/client'));
-}
-app.use(Serve('storage'));
-
 app.use(async (ctx, next) => {
   const { url } = ctx;
   const match = decodeURI(url).match(/^\/(recipe|step)\/([a-f0-9-]{36})_(\d+)?x(\d+)?([%@!^<>])?(c)?.jpg$/);
@@ -77,9 +71,14 @@ router.use('/ogp', ssrRouter.routes(), ssrRouter.allowedMethods());
 app.use(router.routes());
 app.use(router.allowedMethods());
 
+graphql.middleware(app);
+
+app.use(historyApiFallback({}));
+app.use(Serve('dist/client'));
+app.use(Serve('storage'));
+
 (async () => {
   await initDB();
-  await graphql.middleware(app);
 
   const port = process.env.PORT || 8081;
   const server = app.listen(port, () => {
