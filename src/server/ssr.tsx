@@ -45,7 +45,7 @@ ssrRouter.get('*', async (ctx) => {
 <title>${recipe.name} Recipe - My Daily Cuisine</title>
 <meta name="description" content="${recipe.name} recipe page" />
 <meta property="og:title" content="${recipe.name} Recipe - My Daily Cuisine" />
-${recipe.image ? `<meta property="og:image" content="/recipe/${recipe.id}_300x300^c.jpg" />` : ''}
+${recipe.image ? `<meta property="og:image" content="${process.env.HOST || ''}/recipe/${recipe.id}_300x300^c.jpg" />` : ''}
 <meta property="og:site_name" content="My Daily Cuisine" />
 <meta property="twitter:card" content="summary" />
 <meta property="twitter:title" content="${recipe.name} Recipe - My Daily Cuisine" />

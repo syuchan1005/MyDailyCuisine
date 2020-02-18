@@ -16,8 +16,8 @@ const graphql = new GraphQL();
 const router = new Router();
 
 app.use(async (ctx, next) => {
-  const ua = ctx.request.headers['user-agent'].toLowerCase();
-  if (!ctx.request.url.startsWith('/ogp') && prerender.crawlerUserAgents.includes(ua)) {
+  const ua: string = ctx.request.headers['user-agent'].toLowerCase();
+  if (!ctx.request.url.startsWith('/ogp') && prerender.crawlerUserAgents.some((crawlerUserAgent: string) => ua.includes(crawlerUserAgent.toLowerCase()))) {
     ctx.request.url = `/ogp${ctx.request.url}`;
   }
   await next();
