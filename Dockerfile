@@ -24,7 +24,7 @@ LABEL name="MyDailyCuisine"
 
 EXPOSE 80
 
-ENV DEBUG=""
+ENV DEBUG="", PORT=80
 
 RUN apk add --no-cache supervisor nginx graphicsmagick \
     && mkdir /MyDailyCuisine
